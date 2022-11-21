@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widgets_ui/models/language.dart';
 
 class PrincipalScreenWidget extends StatefulWidget {
@@ -11,15 +10,20 @@ class PrincipalScreenWidget extends StatefulWidget {
 
 class _PrincipalScreenWidgetState extends State<PrincipalScreenWidget> {
   List<Language> languages = [
-    Language("React", "Meta framework", "assets/react.svg"),
-    Language("iOS", "Apple native language", "assets/apple.svg")
+    Language("React", "Meta framework"),
+    Language("iOS", "Apple native language")
   ];
+
+  final title = const Text("Minhas linguagens");
+  final iconAdd = const Icon(Icons.add);
+  final iconCircleOutlined = const Icon(Icons.circle_outlined);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Minhas linguagens"),
+        title: title,
+        actions: [IconButton(onPressed: _goToForm, icon: iconAdd)],
       ),
       body: Column(
         children: [
@@ -55,15 +59,21 @@ class _PrincipalScreenWidgetState extends State<PrincipalScreenWidget> {
         .where((language) => language.selected)
         .map((language) => Card(
                 child: ListTile(
-              leading: SvgPicture.asset(
-                language.asset,
-                semanticsLabel: language.name,
-                width: 24,
-                height: 24,
-              ),
+              leading: iconCircleOutlined,
               title: Text(language.name),
               subtitle: Text(language.description),
             )))
         .toList();
+  }
+
+  void _goToForm() {
+    Future future = Navigator.pushNamed(context, "/add");
+
+    future.then((language) {
+      language.selected = true;
+      setState(() {
+        languages.add(language);
+      });
+    });
   }
 }
